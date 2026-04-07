@@ -54,24 +54,41 @@ with col_viz:
     st.subheader("2. Live Flower Visualization")
     
     # --- SVG GENERATION LOGIC ---
-    sl = sepal_length * 30
-    sw = sepal_width * 30
-    pl = petal_length * 30
-    pw = petal_width * 30
+    # --- RADAR CHART VISUALIZATION LOGIC ---
+    import plotly.graph_objects as go
     
-    # SVG string with zero indentation to prevent Markdown code block formatting
-    svg_code = f"""<div style="display: flex; justify-content: center; align-items: center; height: 100%; background-color: #f0f2f6; border-radius: 10px; padding: 20px;">
-<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="150" cy="150" rx="{sw/2}" ry="{sl/2}" fill="#8fbc8f" opacity="0.8" />
-<ellipse cx="150" cy="150" rx="{sw/2}" ry="{sl/2}" fill="#8fbc8f" opacity="0.8" transform="rotate(90 150 150)" />
-<ellipse cx="150" cy="150" rx="{pw/2}" ry="{pl/2}" fill="#dda0dd" opacity="0.9" transform="rotate(45 150 150)" />
-<ellipse cx="150" cy="150" rx="{pw/2}" ry="{pl/2}" fill="#dda0dd" opacity="0.9" transform="rotate(135 150 150)" />
-<circle cx="150" cy="150" r="8" fill="#ffb6c1" />
-</svg>
-</div>"""
+    # Define the 4 axes of our radar chart
+    categories = ['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width']
     
-    # Render the SVG in Streamlit
-    st.markdown(svg_code, unsafe_allow_html=True)
+    # We add the first value to the end of the list to "close" the shape loop
+    values = [sepal_length, sepal_width, petal_length, petal_width]
+    values_closed = values + [values[0]]
+    categories_closed = categories + [categories[0]]
+    
+    fig_radar = go.Figure()
+    
+    fig_radar.add_trace(go.Scatterpolar(
+        r=values_closed,
+        theta=categories_closed,
+        fill='toself',
+        fillcolor='rgba(221, 160, 221, 0.6)', # Transparent purple/pink
+        line=dict(color='#8fbc8f', width=3),  # Green border
+        name='Current Measurements'
+    ))
+    
+    fig_radar.update_layout(
+        polar=dict(
+            radialaxis=dict(visible=True, range=[0, 10]) # Lock the scale to 10cm max
+        ),
+        showlegend=False,
+        margin=dict(l=30, r=30, t=30, b=30),
+        height=350,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    # Render the interactive graph
+    st.plotly_chart(fig_radar, use_container_width=True)
 
 st.divider()
 
