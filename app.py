@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # Set up the page layout and title
-st.set_page_config(page_title="Iris Predictor | BSIT", page_icon="🌸", layout="wide") # Changed to wide for better side-by-side view
+st.set_page_config(page_title="Iris Predictor | BSIT", page_icon="🌸", layout="wide") 
 
 # Load the exported model efficiently
 @st.cache_resource
@@ -49,28 +49,7 @@ with col_viz:
     pl = petal_length * 30
     pw = petal_width * 30
     
-    svg_code = f"""<div style="display: flex; justify-content: center; align-items: center; height: 100%; background-color: #f0f2f6; border-radius: 10px; padding: 20px;">
-<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="150" cy="150" rx="{sw/2}" ry="{sl/2}" fill="#8fbc8f" opacity="0.8" />
-<ellipse cx="150" cy="150" rx="{sw/2}" ry="{sl/2}" fill="#8fbc8f" opacity="0.8" transform="rotate(90 150 150)" />
-<ellipse cx="150" cy="150" rx="{pw/2}" ry="{pl/2}" fill="#dda0dd" opacity="0.9" transform="rotate(45 150 150)" />
-<ellipse cx="150" cy="150" rx="{pw/2}" ry="{pl/2}" fill="#dda0dd" opacity="0.9" transform="rotate(135 150 150)" />
-<circle cx="150" cy="150" r="8" fill="#ffb6c1" />
-</svg>
-</div>"""
-    
-    # Render the SVG in Streamlit
-    st.markdown(svg_code, unsafe_allow_html=True)with col_viz:
-    st.subheader("2. Live Flower Visualization")
-    
-    # --- SVG GENERATION LOGIC ---
-    sl = sepal_length * 30
-    sw = sepal_width * 30
-    pl = petal_length * 30
-    pw = petal_width * 30
-    
-    # CRITICAL FIX: The HTML/SVG code below must have ZERO indentation 
-    # so Streamlit does not confuse it for a Markdown code block.
+    # SVG string with zero indentation to prevent Markdown code block formatting
     svg_code = f"""<div style="display: flex; justify-content: center; align-items: center; height: 100%; background-color: #f0f2f6; border-radius: 10px; padding: 20px;">
 <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
 <ellipse cx="150" cy="150" rx="{sw/2}" ry="{sl/2}" fill="#8fbc8f" opacity="0.8" />
