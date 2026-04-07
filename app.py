@@ -1,6 +1,10 @@
 import streamlit as st
 import pickle
 import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from sklearn import datasets
 
 # Set up the page layout and title
 st.set_page_config(page_title="Iris Predictor | BSIT", page_icon="🌸", layout="wide") 
@@ -23,9 +27,15 @@ st.markdown("""
 4. Allyza Kaye Wong
 5. Charlene Hipolito
 
-**ISPSC BSIT**
+**ISPSC-TAGUDIN BSIT-3A**
 """)
+
+
+st.markdown("🐙 **[View our Source Code and Dataset on GitHub](https://github.com/daviddatux25/iris-ml-activity)**")
+
 st.divider()
+
+
 
 # Create two columns: Left for Inputs, Right for the Live Visualization
 col_input, col_viz = st.columns([1, 1])
@@ -86,3 +96,41 @@ if st.button("Predict Species with KNN 🚀", use_container_width=True, type="pr
         st.info("The petals and sepals are fairly balanced, a common trait of the Versicolor species.")
     else:
         st.info("Notice how large both the petals and sepals are? Virginica is generally the largest of the three species.")
+        
+    st.divider()
+    
+    # --- 3D GRAPH GENERATION LOGIC ---
+    st.subheader("3. 3D Nearest Neighbors Analysis")
+    st.markdown(f"See where your **{predicted_species}** flower lands compared to the original dataset. You can click, drag, and zoom this 3D graph!")
+    
+    # Load the background dataset for the graph
+    iris_data = datasets.load_iris()
+    df = pd.DataFrame(data=iris_data.data, columns=iris_data.feature_names)
+    df['Species'] = [iris_data.target_names[i].capitalize() for i in iris_data.target]
+    
+    # Create the 3D Scatter Plot
+    fig = px.scatter_3d(
+        df, 
+        x='sepal length (cm)', 
+        y='sepal width (cm)', 
+        z='petal length (cm)',
+        color='Species', 
+        color_discrete_sequence=['#ef553b', '#00cc96', '#ab63fa'],
+        opacity=0.5
+    )
+    
+    # Add the User's Custom Flower as a giant marker
+    fig.add_trace(go.Scatter3d(
+        x=[sepal_length], 
+        y=[sepal_width], 
+        z=[petal_length],
+        mode='markers',
+        marker=dict(size=15, color='black', symbol='diamond'),
+        name='🌸 YOUR INPUT'
+    ))
+    
+    # Clean up the layout
+    fig.update_layout(margin=dict(l=0, r=0, b=0, t=0), height=500)
+    
+    # Render it in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
